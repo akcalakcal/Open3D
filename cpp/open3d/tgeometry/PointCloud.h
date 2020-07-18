@@ -35,6 +35,7 @@
 #include "open3d/core/TensorList.h"
 #include "open3d/geometry/PointCloud.h"
 #include "open3d/tgeometry/Geometry.h"
+#include "open3d/tgeometry/TensorListMap.h"
 
 namespace open3d {
 namespace tgeometry {
@@ -246,7 +247,7 @@ public:
     geometry::PointCloud ToLegacyPointCloud() const;
 
 protected:
-    std::unordered_map<std::string, core::TensorList> point_attr_;
+    TensorListMap point_attr_;
     core::Device device_ = core::Device("CPU:0");
 };
 
