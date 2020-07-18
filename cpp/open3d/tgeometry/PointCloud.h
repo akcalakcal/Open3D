@@ -34,7 +34,7 @@
 #include "open3d/core/Tensor.h"
 #include "open3d/core/TensorList.h"
 #include "open3d/geometry/PointCloud.h"
-#include "open3d/tgeometry/Geometry3D.h"
+#include "open3d/tgeometry/Geometry.h"
 
 namespace open3d {
 namespace tgeometry {
@@ -88,7 +88,7 @@ namespace tgeometry {
 ///       PointCloud::GetPointAttr("points")
 ///     - PointCloud::HasPointNormals() is the same as
 ///       PointCloud::HasPointAttr("normals")
-class PointCloud : public Geometry3D {
+class PointCloud : public Geometry {
 public:
     /// Construct an empty pointcloud.
     PointCloud(core::Dtype dtype = core::Dtype::Float32,
@@ -218,24 +218,23 @@ public:
     /// Clear all data in the pointcloud.
     PointCloud &Clear() override;
 
-    core::Tensor GetMinBound() const override;
-
-    core::Tensor GetMaxBound() const override;
-
-    core::Tensor GetCenter() const override;
-
-    PointCloud &Transform(const core::Tensor &transformation) override;
-
-    PointCloud &Translate(const core::Tensor &translation,
-                          bool relative = true) override;
-
-    PointCloud &Scale(double scale, const core::Tensor &center) override;
-
-    PointCloud &Rotate(const core::Tensor &R,
-                       const core::Tensor &center) override;
-
     /// Returns !HasPoints().
     bool IsEmpty() const override;
+
+    core::Tensor GetMinBound() const;
+
+    core::Tensor GetMaxBound() const;
+
+    core::Tensor GetCenter() const;
+
+    PointCloud &Transform(const core::Tensor &transformation);
+
+    PointCloud &Translate(const core::Tensor &translation,
+                          bool relative = true);
+
+    PointCloud &Scale(double scale, const core::Tensor &center);
+
+    PointCloud &Rotate(const core::Tensor &R, const core::Tensor &center);
 
     /// Create a PointCloud from a legacy Open3D PointCloud.
     static tgeometry::PointCloud FromLegacyPointCloud(

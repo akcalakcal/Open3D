@@ -1,7 +1,6 @@
 # Create object library
 set(ALL_SOURCE_FILES
     PointCloud.cpp
-    Geometry3D.cpp
 )
 
 add_library(tgeometry OBJECT ${ALL_SOURCE_FILES})

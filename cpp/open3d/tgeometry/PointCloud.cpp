@@ -53,7 +53,7 @@ static core::Tensor EigenVector3dToTensor(const Eigen::Vector3d &value,
 }
 
 PointCloud::PointCloud(core::Dtype dtype, const core::Device &device)
-    : Geometry3D(Geometry::GeometryType::PointCloud), device_(device) {
+    : Geometry(Geometry::GeometryType::PointCloud, 3), device_(device) {
     SetPoints(core::TensorList({3}, dtype, device_));
 }
 
