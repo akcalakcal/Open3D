@@ -247,8 +247,8 @@ public:
     geometry::PointCloud ToLegacyPointCloud() const;
 
 protected:
-    TensorListMap point_attr_;
     core::Device device_ = core::Device("CPU:0");
+    TensorListMap point_attr_;
 };
 
 }  // namespace tgeometry

@@ -39,7 +39,9 @@ namespace open3d {
 namespace tgeometry {
 
 PointCloud::PointCloud(core::Dtype dtype, const core::Device &device)
-    : Geometry(Geometry::GeometryType::PointCloud, 3), device_(device) {
+    : Geometry(Geometry::GeometryType::PointCloud, 3),
+      device_(device),
+      point_attr_(TensorListMap("points")) {
     SetPoints(core::TensorList({3}, dtype, device_));
 }
 

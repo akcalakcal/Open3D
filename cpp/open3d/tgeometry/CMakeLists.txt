@@ -1,6 +1,7 @@
 # Create object library
 set(ALL_SOURCE_FILES
     PointCloud.cpp
+    TensorListMap.cpp
 )
 
 add_library(tgeometry OBJECT ${ALL_SOURCE_FILES})
