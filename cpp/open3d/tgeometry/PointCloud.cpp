@@ -30,27 +30,13 @@
 #include <string>
 #include <unordered_map>
 
+#include "open3d/core/EigenConverter.h"
 #include "open3d/core/ShapeUtil.h"
 #include "open3d/core/Tensor.h"
 #include "open3d/core/TensorList.h"
 
 namespace open3d {
 namespace tgeometry {
-
-static Eigen::Vector3d TensorToEigenVector3d(const core::Tensor &tensor) {
-    // TODO: Tensor::To(dtype, device).
-    core::Tensor dtensor =
-            tensor.To(core::Dtype::Float64).Copy(core::Device("CPU:0"));
-    return Eigen::Vector3d(dtensor[0].Item<double>(), dtensor[1].Item<double>(),
-                           dtensor[2].Item<double>());
-}
-
-static core::Tensor EigenVector3dToTensor(const Eigen::Vector3d &value,
-                                          core::Dtype dtype,
-                                          const core::Device &device) {
-    return core::Tensor(value.data(), {3}, core::Dtype::Float64, device)
-            .To(dtype);
-}
 
 PointCloud::PointCloud(core::Dtype dtype, const core::Device &device)
     : Geometry(Geometry::GeometryType::PointCloud, 3), device_(device) {
@@ -166,7 +152,8 @@ tgeometry::PointCloud PointCloud::FromLegacyPointCloud(
         // to device.
         for (const Eigen::Vector3d &point : pcd_legacy.points_) {
             pcd.GetPoints().PushBack(
-                    EigenVector3dToTensor(point, dtype, device));
+                    core::eigen_converter::EigenVector3dToTensor(point, dtype,
+                                                                 device));
         }
     } else {
         utility::LogWarning(
@@ -177,14 +164,16 @@ tgeometry::PointCloud PointCloud::FromLegacyPointCloud(
         pcd.SetPointColors(core::TensorList({3}, dtype, device));
         for (const Eigen::Vector3d &color : pcd_legacy.colors_) {
             pcd.GetPointColors().PushBack(
-                    EigenVector3dToTensor(color, dtype, device));
+                    core::eigen_converter::EigenVector3dToTensor(color, dtype,
+                                                                 device));
         }
     }
     if (pcd_legacy.HasNormals()) {
         pcd.SetPointNormals(core::TensorList({3}, dtype, device));
         for (const Eigen::Vector3d &normal : pcd_legacy.normals_) {
             pcd.GetPointNormals().PushBack(
-                    EigenVector3dToTensor(normal, dtype, device));
+                    core::eigen_converter::EigenVector3dToTensor(normal, dtype,
+                                                                 device));
         }
     }
     return pcd;
@@ -195,19 +184,22 @@ geometry::PointCloud PointCloud::ToLegacyPointCloud() const {
     if (HasPoints()) {
         const core::TensorList &points = GetPoints();
         for (int64_t i = 0; i < points.GetSize(); i++) {
-            pcd_legacy.points_.push_back(TensorToEigenVector3d(points[i]));
+            pcd_legacy.points_.push_back(
+                    core::eigen_converter::TensorToEigenVector3d(points[i]));
         }
     }
     if (HasPointColors()) {
         const core::TensorList &colors = GetPointColors();
         for (int64_t i = 0; i < colors.GetSize(); i++) {
-            pcd_legacy.colors_.push_back(TensorToEigenVector3d(colors[i]));
+            pcd_legacy.colors_.push_back(
+                    core::eigen_converter::TensorToEigenVector3d(colors[i]));
         }
     }
     if (HasPointNormals()) {
         const core::TensorList &normals = GetPointNormals();
         for (int64_t i = 0; i < normals.GetSize(); i++) {
-            pcd_legacy.normals_.push_back(TensorToEigenVector3d(normals[i]));
+            pcd_legacy.normals_.push_back(
+                    core::eigen_converter::TensorToEigenVector3d(normals[i]));
         }
     }
     return pcd_legacy;
