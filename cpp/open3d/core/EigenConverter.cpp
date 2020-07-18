@@ -41,6 +41,7 @@ Eigen::Vector3d TensorToEigenVector3d(const core::Tensor &tensor) {
 core::Tensor EigenVector3dToTensor(const Eigen::Vector3d &value,
                                    core::Dtype dtype,
                                    const core::Device &device) {
+    // The memory will be copied.
     return core::Tensor(value.data(), {3}, core::Dtype::Float64, device)
             .To(dtype);
 }
